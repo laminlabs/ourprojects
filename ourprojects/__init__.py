@@ -1,12 +1,13 @@
 """Manage projects & teams [`source <https://github.com/laminlabs/ourprojects/blob/main/ourprojects/models.py>`__].
 
-Install the package::
+Install and mount `ourprojects` in a new instance:
 
-   pip install ourprojects
+>>> pip install ourprojects
+>>> lamin init --storage ./test-ourprojects --schema ourprojects
 
-Import the package::
+Import the package:
 
-   import ourprojects as ops
+>>> import ourprojects as ops
 
 The `Reference` registry:
 
