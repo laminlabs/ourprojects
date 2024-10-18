@@ -14,13 +14,12 @@ from lnschema_core.models import (
 )
 
 
-class Reference(Record, CanValidate, TracksRun, TracksUpdates):
-    """References.
+class Project(Record, CanValidate, TracksRun, TracksUpdates):
+    """Projects.
 
     Example:
-        >>> reference = Reference(
-        ...     name="A paper title",
-        ...     doi="A doi",
+        >>> Project = Project(
+        ...     name="My project name",
         ... ).save()
     """
 
@@ -32,41 +31,38 @@ class Reference(Record, CanValidate, TracksRun, TracksUpdates):
     uid: str = models.CharField(unique=True, max_length=12, default=ids.base62_12)
     """Universal id, valid across DB instances."""
     name: str = models.CharField(max_length=255, default=None, db_index=True)
-    """Title or name of the reference."""
+    """Title or name of the Project."""
     abbr: str | None = models.CharField(
         max_length=32, db_index=True, unique=True, null=True, default=None
     )
     """A unique abbreviation."""
     url: str | None = models.URLField(max_length=255, null=True, default=None)
     """A URL to view."""
-    pubmed_id: int | None = models.BigIntegerField(null=True, default=None)
-    """A pudbmed ID."""
-    doi: int | None = models.CharField(
-        max_length=255, null=True, default=None, db_index=True
-    )
-    """A DOI."""
-    text: str | None = models.TextField(null=True, default=None)
-    """Text of the reference included in search, e.g. the abstract or the full-text."""
     artifacts: Artifact = models.ManyToManyField(
-        Artifact, through="ArtifactReference", related_name="references"
+        Artifact, through="ArtifactProject", related_name="Projects"
     )
-    """Artifacts labeled with this reference."""
+    """Artifacts labeled with this Project."""
 
 
-class ArtifactReference(Record, LinkORM, TracksRun):
+class ArtifactProject(Record, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = models.ForeignKey(
-        Artifact, CASCADE, related_name="links_reference"
+        Artifact, CASCADE, related_name="links_project"
     )
-    reference: Reference = models.ForeignKey(
-        Reference, PROTECT, related_name="links_artifact"
+    project: Project = models.ForeignKey(
+        Project, PROTECT, related_name="links_artifact"
     )
     feature: Feature = models.ForeignKey(
         Feature,
         PROTECT,
         null=True,
         default=None,
-        related_name="links_artifactreference",
+        related_name="links_artifactproject",
     )
     label_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
     feature_ref_is_name: bool | None = models.BooleanField(null=True, default=None)
+
+    class Meta:
+        # can have the same label linked to the same artifact if the feature is
+        # different
+        unique_together = ("artifact", "project", "feature")

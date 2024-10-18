@@ -14,7 +14,7 @@ The `Reference` registry:
 .. autosummary::
    :toctree: .
 
-    Reference
+    Project
 """
 
 __version__ = "0.0.1"  # denote a pre-release for 0.1.0 with 0.1rc1
@@ -30,4 +30,4 @@ def __getattr__(name):
 
 if _check_instance_setup():
     del __getattr__  # delete so that imports work out
-    from .models import Reference
+    from .models import Project
