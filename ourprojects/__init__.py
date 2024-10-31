@@ -1,4 +1,4 @@
-"""Manage projects & teams [`source <https://github.com/laminlabs/ourprojects/blob/main/ourprojects/models.py>`__].
+"""Manage projects & teams.
 
 Install and mount `ourprojects` in a new instance:
 
