@@ -6,7 +6,7 @@ from lnschema_core import ids
 from lnschema_core.fields import BooleanField, CharField, ForeignKey
 from lnschema_core.models import (
     Artifact,
-    CanValidate,
+    CanCurate,
     Feature,
     LinkORM,
     Record,
@@ -16,7 +16,7 @@ from lnschema_core.models import (
 )
 
 
-class Project(Record, CanValidate, TracksRun, TracksUpdates, ValidateFields):
+class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Projects.
 
     Example:
