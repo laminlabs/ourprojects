@@ -12,10 +12,11 @@ from lnschema_core.models import (
     Record,
     TracksRun,
     TracksUpdates,
+    ValidateFields,
 )
 
 
-class Project(Record, CanValidate, TracksRun, TracksUpdates):
+class Project(Record, CanValidate, TracksRun, TracksUpdates, ValidateFields):
     """Projects.
 
     Example:
