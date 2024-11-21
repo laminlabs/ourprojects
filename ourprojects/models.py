@@ -145,7 +145,7 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         ],
     )
     """Digital Object Identifier (DOI) for the reference."""
-    preprint: bool = BooleanField(default=False)
+    preprint: bool = BooleanField(default=False, db_index=True)
     """Whether the reference is from a preprint."""
     journal: str | None = TextField(null=True)
     """Name of the journal."""
