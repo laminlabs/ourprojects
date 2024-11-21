@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime  # noqa
+from datetime import date  # noqa
 
 from django.core.validators import RegexValidator
 from django.db import models
@@ -10,7 +10,7 @@ from lnschema_core.fields import (
     BigIntegerField,
     BooleanField,
     CharField,
-    DateTimeField,
+    DateField,
     EmailField,
     ForeignKey,
     TextField,
@@ -33,8 +33,9 @@ class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     Example:
         >>> person = Person(
-        ...     name="A paper title",
-        ...     internal=False,
+        ...     name="Jane Doe",
+        ...     email="jane.doe@example.com",
+        ...     internal=True,
         ... ).save()
     """
 
@@ -43,13 +44,13 @@ class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(max_length=12, unique=True, default=ids.base62_12)
+    uid: str = CharField(unique=True, max_length=12, default=ids.base62_12)
     """Universal id, valid across DB instances."""
     name: str = CharField(db_index=True)
     """Name of the person (forename(s) lastname)."""
-    email: str = EmailField(null=True, default=None)
+    email: str | None = EmailField(null=True, default=None)
     """Email of the person."""
-    internal: bool = BooleanField(null=True, default=False)
+    internal: bool = BooleanField(default=False)
     """Whether the person is internal to the organization or not."""
 
 
@@ -57,8 +58,10 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Projects with associated persons and references.
 
     Example:
-        >>> Project = Project(
-        ...     name="My project name",
+        >>> project = Project(
+        ...     name="My Project Name",
+        ...     abbr="MPN",
+        ...     url="https://example.com/my_project",
         ... ).save()
     """
 
@@ -76,6 +79,7 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     url: str | None = URLField(max_length=255, null=True, default=None)
     """A URL to view."""
     persons: Person = models.ManyToManyField(Person, related_name="project_persons")
+    """Persons associated with this project."""
     references: Reference = models.ManyToManyField(
         "Reference", related_name="project_references"
     )
@@ -91,8 +95,16 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     Example:
         >>> reference = Reference(
-        ...     name="A paper title",
-        ...     doi="A doi",
+        ...     name="A Paper Title",
+        ...     abbr="APT",
+        ...     url="https://doi.org/10.1000/xyz123",
+        ...     pubmed_id=12345678,
+        ...     doi="10.1000/xyz123",
+        ...     preprint=False,
+        ...     journal="Nature Biotechnology",
+        ...     description="A groundbreaking research paper.",
+        ...     text="A really informative abstract.",
+        ...     published_at=date(2023, 11, 21),
         ... ).save()
     """
 
@@ -101,7 +113,8 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(max_length=12, unique=True, default=ids.base62_12)
+    uid: str = CharField(unique=True, max_length=12, default=ids.base62_12)
+    """Universal id, valid across DB instances."""
     """Universal id, valid across DB instances."""
     name: str = CharField(db_index=True)
     """Title or name of the reference document."""
@@ -127,15 +140,15 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         ],
     )
     """Digital Object Identifier (DOI) for the reference."""
-    preprint: bool = BooleanField(null=True, default=None)
+    preprint: bool = BooleanField(default=False)
     """Whether the reference is from a preprint."""
-    journal: str = TextField(null=True)
+    journal: str | None = TextField(null=True)
     """Name of the journal."""
-    description: str = TextField(null=True)
+    description: str | None = TextField(null=True)
     """Description of the reference."""
     text: str | None = TextField(null=True)
     """Abstract or full text of the reference."""
-    published_at: datetime = DateTimeField(null=True, default=None)
+    published_at: date = DateField(null=True, default=None)
     """Publication date."""
     persons: Person = models.ManyToManyField(Person, related_name="reference_persons")
     artifacts: Artifact = models.ManyToManyField(
