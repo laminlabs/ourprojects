@@ -10,7 +10,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("lnschema_core", "0069_squashed"),
         ("ourprojects", "0002_alter_artifactproject_artifact_and_more"),

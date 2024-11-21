@@ -6,7 +6,16 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lnschema_core import ids
-from lnschema_core.fields import BooleanField, CharField, ForeignKey, URLField, EmailField, BigIntegerField, TextField, DateTimeField
+from lnschema_core.fields import (
+    BigIntegerField,
+    BooleanField,
+    CharField,
+    DateTimeField,
+    EmailField,
+    ForeignKey,
+    TextField,
+    URLField,
+)
 from lnschema_core.models import (
     Artifact,
     CanCurate,
@@ -31,7 +40,7 @@ class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     class Meta(Record.Meta, TracksRun.Meta, TracksUpdates.Meta):
         abstract = False
-        
+
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(max_length=12, unique=True, default=ids.base62_12)
@@ -66,20 +75,16 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """A unique abbreviation."""
     url: str | None = URLField(max_length=255, null=True, default=None)
     """A URL to view."""
-    persons: Person = models.ManyToManyField(
-        Person, 
-        related_name="project_persons"
-    )
+    persons: Person = models.ManyToManyField(Person, related_name="project_persons")
     references: Reference = models.ManyToManyField(
-        "Reference",
-        related_name="project_references"
+        "Reference", related_name="project_references"
     )
     """References associated with this project."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactProject", related_name="Projects"
     )
     """Artifacts labeled with this Project."""
-    
+
 
 class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """References such as a publication or document, with unique identifiers and metadata.
@@ -132,10 +137,7 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Abstract or full text of the reference."""
     published_at: datetime = DateTimeField(null=True, default=None)
     """Publication date."""
-    persons: Person = models.ManyToManyField(
-        Person, 
-        related_name="reference_persons"
-    )
+    persons: Person = models.ManyToManyField(Person, related_name="reference_persons")
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactReference", related_name="references"
     )
