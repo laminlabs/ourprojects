@@ -80,14 +80,12 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """A unique abbreviation."""
     url: str | None = URLField(max_length=255, null=True, default=None)
     """A URL to view."""
-    people: Person = models.ManyToManyField(Person, related_name="project_people")
+    people: Person = models.ManyToManyField(Person, related_name="projects")
     """People associated with this project."""
-    references: Reference = models.ManyToManyField(
-        "Reference", related_name="project_references"
-    )
+    references: Reference = models.ManyToManyField("Reference", related_name="projects")
     """References associated with this project."""
     artifacts: Artifact = models.ManyToManyField(
-        Artifact, through="ArtifactProject", related_name="Projects"
+        Artifact, through="ArtifactProject", related_name="projects"
     )
     """Artifacts labeled with this Project."""
 
