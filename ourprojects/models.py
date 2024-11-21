@@ -50,8 +50,8 @@ class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Name of the person (forename(s) lastname)."""
     email: str | None = EmailField(null=True, default=None)
     """Email of the person."""
-    internal: bool = BooleanField(default=False, db_index=True)
-    """Whether the person is internal to the organization or not."""
+    external: bool = BooleanField(default=True, db_index=True)
+    """Whether the person is external to the organization or not."""
 
 
 class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
@@ -80,8 +80,8 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """A unique abbreviation."""
     url: str | None = URLField(max_length=255, null=True, default=None)
     """A URL to view."""
-    people: Person = models.ManyToManyField(Person, related_name="projects")
-    """People associated with this project."""
+    contributors: Person = models.ManyToManyField(Person, related_name="projects")
+    """Contributors associated with this project."""
     references: Reference = models.ManyToManyField("Reference", related_name="projects")
     """References associated with this project."""
     artifacts: Artifact = models.ManyToManyField(
@@ -143,6 +143,8 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Digital Object Identifier (DOI) for the reference."""
     preprint: bool = BooleanField(default=False, db_index=True)
     """Whether the reference is from a preprint."""
+    public: bool = BooleanField(default=True, db_index=True)
+    """Whether the reference is public or not."""
     journal: str | None = TextField(null=True)
     """Name of the journal."""
     description: str | None = TextField(null=True)
