@@ -6,16 +6,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lnschema_core import ids
-from lnschema_core.fields import (
-    BigIntegerField,
-    BooleanField,
-    CharField,
-    DateTimeField,
-    ForeignKey,
-    TextField,
-    URLField,
-    EmailField
-)
+from lnschema_core.fields import BooleanField, CharField, ForeignKey, URLField, EmailField, BigIntegerField, TextField, DateTimeField
 from lnschema_core.models import (
     Artifact,
     CanCurate,
@@ -69,15 +60,11 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Internal id, valid only in one DB instance."""
     uid: str = CharField(unique=True, max_length=12, default=ids.base62_12)
     """Universal id, valid across DB instances."""
-    name: str = CharField(max_length=255, default=None, db_index=True)
+    name: str = CharField(db_index=True)
     """Title or name of the Project."""
-    abbr: str | None = CharField(
-        max_length=32, db_index=True, unique=True, null=True, default=None
-    )
+    abbr: str | None = CharField(max_length=32, db_index=True, unique=True, null=True)
     """A unique abbreviation."""
-    url: str | None = models.URLField(
-        max_length=255, null=True, default=None, blank=True
-    )
+    url: str | None = URLField(max_length=255, null=True, default=None)
     """A URL to view."""
     persons: Person = models.ManyToManyField(
         Person, 
@@ -174,7 +161,7 @@ class ArtifactProject(Record, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_project")
     project: Project = ForeignKey(Project, PROTECT, related_name="links_artifact")
-    feature: Feature = ForeignKey(
+    feature: Feature | None = ForeignKey(
         Feature,
         PROTECT,
         null=True,
