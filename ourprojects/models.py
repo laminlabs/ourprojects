@@ -44,9 +44,7 @@ class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(
-        unique=True, max_length=12, db_index=True, default=ids.base62_8
-    )
+    uid: str = CharField(unique=True, max_length=8, db_index=True, default=ids.base62_8)
     """Universal id, valid across DB instances."""
     name: str = CharField(db_index=True)
     """Name of the person (forename(s) lastname)."""
@@ -155,10 +153,31 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Abstract or full text of the reference."""
     published_at: date | None = DateField(null=True, default=None)
     """Publication date."""
-    people: Person = models.ManyToManyField(Person, related_name="references")
+    authors: Person = models.ManyToManyField(Person, related_name="references")
     """All people associated with this reference."""
-    artifacts: Artifact = models.ManyToManyField(Artifact, related_name="references")
+    artifacts: Artifact = models.ManyToManyField(
+        Artifact, through="ArtifactReference", related_name="references"
+    )
     """Artifacts labeled with this reference."""
+
+
+class ArtifactReference(Record, LinkORM, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_reference")
+    reference: Reference = ForeignKey(Reference, PROTECT, related_name="links_artifact")
+    feature: Feature | None = ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_artifactreference",
+    )
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        # can have the same label linked to the same artifact if the feature is different
+        unique_together = ("artifact", "reference", "feature")
 
 
 class ArtifactProject(Record, LinkORM, TracksRun):
@@ -176,6 +195,5 @@ class ArtifactProject(Record, LinkORM, TracksRun):
     feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
     class Meta:
-        # can have the same label linked to the same artifact if the feature is
-        # different
+        # can have the same label linked to the same artifact if the feature is different
         unique_together = ("artifact", "project", "feature")
