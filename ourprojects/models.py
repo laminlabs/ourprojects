@@ -148,7 +148,7 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Description of the reference."""
     text: str | None = TextField(null=True)
     """Abstract or full text of the reference."""
-    published_at: date = DateField(null=True, default=None)
+    published_at: date | None = DateField(null=True, default=None)
     """Publication date."""
     persons: Person = models.ManyToManyField(Person, related_name="reference_persons")
     artifacts: Artifact = models.ManyToManyField(
