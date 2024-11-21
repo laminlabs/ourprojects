@@ -14,7 +14,9 @@ The `Reference` registry:
 .. autosummary::
    :toctree: .
 
+    Person
     Project
+    Reference
 """
 
 __version__ = "0.0.1"  # denote a pre-release for 0.1.0 with 0.1rc1
@@ -32,4 +34,4 @@ if _check_instance_setup():
     import lamindb
 
     del __getattr__  # delete so that imports work out
-    from .models import Project
+    from .models import Person, Project, Reference
