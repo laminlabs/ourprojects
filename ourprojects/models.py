@@ -29,7 +29,7 @@ from lnschema_core.models import (
 
 
 class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
-    """Internal and external persons that can be a part of projects or references.
+    """Internal and external people that can be a part of projects or references.
 
     Example:
         >>> person = Person(
@@ -44,18 +44,20 @@ class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, default=ids.base62_12)
+    uid: str = CharField(
+        unique=True, max_length=12, db_index=True, default=ids.base62_8
+    )
     """Universal id, valid across DB instances."""
     name: str = CharField(db_index=True)
     """Name of the person (forename(s) lastname)."""
     email: str | None = EmailField(null=True, default=None)
     """Email of the person."""
-    internal: bool = BooleanField(default=False)
+    internal: bool = BooleanField(default=False, db_index=True)
     """Whether the person is internal to the organization or not."""
 
 
 class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
-    """Projects with associated persons and references.
+    """Projects with associated people and references.
 
     Example:
         >>> project = Project(
@@ -70,7 +72,9 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, default=ids.base62_12)
+    uid: str = CharField(
+        unique=True, max_length=12, db_index=True, default=ids.base62_12
+    )
     """Universal id, valid across DB instances."""
     name: str = CharField(db_index=True)
     """Title or name of the Project."""
@@ -78,8 +82,8 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """A unique abbreviation."""
     url: str | None = URLField(max_length=255, null=True, default=None)
     """A URL to view."""
-    persons: Person = models.ManyToManyField(Person, related_name="project_persons")
-    """Persons associated with this project."""
+    people: Person = models.ManyToManyField(Person, related_name="project_people")
+    """People associated with this project."""
     references: Reference = models.ManyToManyField(
         "Reference", related_name="project_references"
     )
@@ -113,8 +117,9 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
 
     id: int = models.AutoField(primary_key=True)
     """Internal id, valid only in one DB instance."""
-    uid: str = CharField(unique=True, max_length=12, default=ids.base62_12)
-    """Universal id, valid across DB instances."""
+    uid: str = CharField(
+        unique=True, max_length=12, db_index=True, default=ids.base62_12
+    )
     """Universal id, valid across DB instances."""
     name: str = CharField(db_index=True)
     """Title or name of the reference document."""
@@ -125,11 +130,11 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         null=True,
     )
     """A unique abbreviation for the reference."""
-    url: str | None = URLField(null=True, blank=True)
+    url: str | None = URLField(null=True)
     """URL linking to the reference."""
-    pubmed_id: int | None = BigIntegerField(null=True)
+    pubmed_id: int | None = BigIntegerField(null=True, db_index=True)
     """A PudMmed ID."""
-    doi: int | None = CharField(
+    doi: str | None = CharField(
         null=True,
         db_index=True,
         validators=[
@@ -150,26 +155,10 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Abstract or full text of the reference."""
     published_at: date | None = DateField(null=True, default=None)
     """Publication date."""
-    persons: Person = models.ManyToManyField(Person, related_name="reference_persons")
-    artifacts: Artifact = models.ManyToManyField(
-        Artifact, through="ArtifactReference", related_name="references"
-    )
+    people: Person = models.ManyToManyField(Person, related_name="references")
+    """All people associated with this reference."""
+    artifacts: Artifact = models.ManyToManyField(Artifact, related_name="references")
     """Artifacts labeled with this reference."""
-
-
-class ArtifactReference(Record, LinkORM, TracksRun):
-    id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_reference")
-    reference: Reference = ForeignKey(Reference, PROTECT, related_name="links_artifact")
-    feature: Feature = ForeignKey(
-        Feature,
-        PROTECT,
-        null=True,
-        default=None,
-        related_name="links_artifactreference",
-    )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
 
 
 class ArtifactProject(Record, LinkORM, TracksRun):
