@@ -108,3 +108,5 @@ docs/conf.py
 _docs_tmp*
 docs/test-ourprojects/
 test-ourprojects/
+test.ipynb
+run-tests
