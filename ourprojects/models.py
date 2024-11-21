@@ -3,7 +3,7 @@ from __future__ import annotations
 from django.db import models
 from django.db.models import CASCADE, PROTECT
 from lnschema_core import ids
-from lnschema_core.fields import BooleanField, CharField, ForeignKey
+from lnschema_core.fields import BooleanField, CharField, ForeignKey, URLField
 from lnschema_core.models import (
     Artifact,
     CanCurate,
@@ -36,7 +36,7 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Title or name of the Project."""
     abbr: str | None = CharField(max_length=32, db_index=True, unique=True, null=True)
     """A unique abbreviation."""
-    url: str | None = models.URLField(max_length=255, null=True, default=None)
+    url: str | None = URLField(max_length=255, null=True, default=None)
     """A URL to view."""
     artifacts: Artifact = models.ManyToManyField(
         Artifact, through="ArtifactProject", related_name="Projects"
