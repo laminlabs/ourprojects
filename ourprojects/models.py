@@ -51,7 +51,7 @@ class Person(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     email: str | None = EmailField(null=True, default=None)
     """Email of the person."""
     external: bool = BooleanField(default=True, db_index=True)
-    """Whether the person is external to the organization or not."""
+    """Whether the person is external to the organization."""
 
 
 class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
@@ -144,7 +144,7 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     preprint: bool = BooleanField(default=False, db_index=True)
     """Whether the reference is from a preprint."""
     public: bool = BooleanField(default=True, db_index=True)
-    """Whether the reference is public or not."""
+    """Whether the reference is public."""
     journal: str | None = TextField(null=True)
     """Name of the journal."""
     description: str | None = TextField(null=True)
