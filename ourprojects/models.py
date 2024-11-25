@@ -19,6 +19,7 @@ from lnschema_core.fields import (
 from lnschema_core.models import (
     Artifact,
     CanCurate,
+    Collection,
     Feature,
     LinkORM,
     Record,
@@ -88,6 +89,10 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         Artifact, through="ArtifactProject", related_name="projects"
     )
     """Artifacts labeled with this Project."""
+    collections: Collection = models.ManyToManyField(
+        Collection, related_name="projects"
+    )
+    """Collections labeled with this project."""
 
 
 class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
@@ -159,6 +164,10 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         Artifact, through="ArtifactReference", related_name="references"
     )
     """Artifacts labeled with this reference."""
+    collections: Collection = models.ManyToManyField(
+        Collection, related_name="references"
+    )
+    """Collections labeled with this reference."""
 
 
 class ArtifactReference(Record, LinkORM, TracksRun):
