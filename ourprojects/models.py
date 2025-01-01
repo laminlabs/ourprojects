@@ -5,8 +5,8 @@ from datetime import date  # noqa
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import CASCADE, PROTECT
-from lnschema_core import ids
-from lnschema_core.fields import (
+from lamindb import ids
+from lamindb.fields import (
     BigIntegerField,
     BooleanField,
     CharField,
@@ -16,7 +16,7 @@ from lnschema_core.fields import (
     TextField,
     URLField,
 )
-from lnschema_core.models import (
+from lamindb.models import (
     Artifact,
     CanCurate,
     Feature,
