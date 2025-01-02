@@ -31,7 +31,5 @@ def __getattr__(name):
 
 
 if _check_instance_setup():
-    import lamindb
-
     del __getattr__  # delete so that imports work out
     from .models import Person, Project, Reference
