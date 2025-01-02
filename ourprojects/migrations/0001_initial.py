@@ -2,9 +2,9 @@
 
 import django.core.validators
 import django.db.models.deletion
-import lamidb.base.ids
-import lamidb.base.users
 import lamindb.base.fields
+import lamindb.base.ids
+import lamindb.base.users
 import lamindb.models
 from django.db import migrations, models
 
@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                     "created_by",
                     lamindb.base.fields.ForeignKey(
                         blank=True,
-                        default=lamidb.base.users.current_user_id,
+                        default=lamindb.base.users.current_user_id,
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
                         to="lamindb.user",
@@ -114,7 +114,7 @@ class Migration(migrations.Migration):
                     "created_by",
                     lamindb.base.fields.ForeignKey(
                         blank=True,
-                        default=lamidb.base.users.current_user_id,
+                        default=lamindb.base.users.current_user_id,
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
                         to="lamindb.user",
@@ -162,7 +162,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.CharField(
                         blank=True,
                         db_index=True,
-                        default=lamidb.base.ids.base62_8,
+                        default=lamindb.base.ids.base62_8,
                         max_length=8,
                         unique=True,
                     ),
@@ -193,7 +193,7 @@ class Migration(migrations.Migration):
                     "created_by",
                     lamindb.base.fields.ForeignKey(
                         blank=True,
-                        default=lamidb.base.users.current_user_id,
+                        default=lamindb.base.users.current_user_id,
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
                         to="lamindb.user",
@@ -237,7 +237,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.CharField(
                         blank=True,
                         db_index=True,
-                        default=lamidb.base.ids.base62_12,
+                        default=lamindb.base.ids.base62_12,
                         max_length=12,
                         unique=True,
                     ),
@@ -287,7 +287,7 @@ class Migration(migrations.Migration):
                     "created_by",
                     lamindb.base.fields.ForeignKey(
                         blank=True,
-                        default=lamidb.base.users.current_user_id,
+                        default=lamindb.base.users.current_user_id,
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
                         to="lamindb.user",
@@ -341,7 +341,7 @@ class Migration(migrations.Migration):
                     lamindb.base.fields.CharField(
                         blank=True,
                         db_index=True,
-                        default=lamidb.base.ids.base62_12,
+                        default=lamindb.base.ids.base62_12,
                         max_length=12,
                         unique=True,
                     ),
@@ -436,7 +436,7 @@ class Migration(migrations.Migration):
                     "created_by",
                     lamindb.base.fields.ForeignKey(
                         blank=True,
-                        default=lamidb.base.users.current_user_id,
+                        default=lamindb.base.users.current_user_id,
                         on_delete=django.db.models.deletion.PROTECT,
                         related_name="+",
                         to="lamindb.user",
