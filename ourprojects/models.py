@@ -161,7 +161,7 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Artifacts labeled with this reference."""
 
 
-class ArtifactReference(Record, LinkORM, TracksRun):
+class ArtifactReference(LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_reference")
     reference: Reference = ForeignKey(Reference, PROTECT, related_name="links_artifact")
@@ -180,7 +180,7 @@ class ArtifactReference(Record, LinkORM, TracksRun):
         unique_together = ("artifact", "reference", "feature")
 
 
-class ArtifactProject(Record, LinkORM, TracksRun):
+class ArtifactProject(LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_project")
     project: Project = ForeignKey(Project, PROTECT, related_name="links_artifact")
