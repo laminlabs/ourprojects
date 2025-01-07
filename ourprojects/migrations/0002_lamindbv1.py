@@ -10,16 +10,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="artifactproject",
-            name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, default=1),
-        ),
-        migrations.AddField(
-            model_name="artifactreference",
-            name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, default=1),
-        ),
-        migrations.AddField(
             model_name="person",
             name="_branch_code",
             field=models.SmallIntegerField(db_index=True, default=1),
