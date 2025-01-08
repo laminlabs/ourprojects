@@ -27,16 +27,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="person",
             name="aux",
-            field=models.JSONField(default=None, null=True),
+            field=models.JSONField(db_default=None, null=True),
         ),
         migrations.AddField(
             model_name="project",
             name="aux",
-            field=models.JSONField(default=None, null=True),
+            field=models.JSONField(db_default=None, null=True),
         ),
         migrations.AddField(
             model_name="reference",
             name="aux",
-            field=models.JSONField(default=None, null=True),
+            field=models.JSONField(db_default=None, null=True),
         ),
     ]
