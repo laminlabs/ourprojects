@@ -18,6 +18,7 @@ from lamindb.base.fields import (
 )
 from lamindb.models import (
     Artifact,
+    BasicRecord,
     CanCurate,
     Feature,
     LinkORM,
@@ -161,7 +162,7 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     """Artifacts labeled with this reference."""
 
 
-class ArtifactReference(LinkORM, TracksRun):
+class ArtifactReference(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_reference")
     reference: Reference = ForeignKey(Reference, PROTECT, related_name="links_artifact")
@@ -180,7 +181,7 @@ class ArtifactReference(LinkORM, TracksRun):
         unique_together = ("artifact", "reference", "feature")
 
 
-class ArtifactProject(LinkORM, TracksRun):
+class ArtifactProject(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
     artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_project")
     project: Project = ForeignKey(Project, PROTECT, related_name="links_artifact")
