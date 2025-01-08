@@ -12,17 +12,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="person",
             name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, default=1),
+            field=models.SmallIntegerField(db_index=True, db_default=1),
         ),
         migrations.AddField(
             model_name="project",
             name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, default=1),
+            field=models.SmallIntegerField(db_index=True, db_default=1),
         ),
         migrations.AddField(
             model_name="reference",
             name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, default=1),
+            field=models.SmallIntegerField(db_index=True, db_default=1),
         ),
         migrations.AddField(
             model_name="person",
