@@ -20,6 +20,7 @@ from lamindb.models import (
     Artifact,
     BasicRecord,
     CanCurate,
+    Collection,
     Feature,
     LinkORM,
     Record,
@@ -91,9 +92,13 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
     )
     """Artifacts labeled with this Project."""
     transforms: Transform = models.ManyToManyField(
-        Transform, through="TransformProject", related_name="references"
+        Transform, through="TransformProject", related_name="projects"
     )
     """Transforms labeled with this project."""
+    collections: Collection = models.ManyToManyField(
+        Collection, through="CollectionProject", related_name="projects"
+    )
+    """Collections labeled with this project."""
 
 
 class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
@@ -169,6 +174,10 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         Transform, through="TransformReference", related_name="references"
     )
     """Transforms labeled with this reference."""
+    collections: Artifact = models.ManyToManyField(
+        Collection, through="CollectionReference", related_name="references"
+    )
+    """Collections labeled with this reference."""
 
 
 class ArtifactProject(BasicRecord, LinkORM, TracksRun):
@@ -197,6 +206,17 @@ class TransformProject(BasicRecord, LinkORM, TracksRun):
 
     class Meta:
         unique_together = ("transform", "project")
+
+
+class CollectionProject(BasicRecord, LinkORM, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    collection: Collection = ForeignKey(
+        Collection, CASCADE, related_name="links_project"
+    )
+    project: Project = ForeignKey(Project, PROTECT, related_name="links_collection")
+
+    class Meta:
+        unique_together = ("collection", "project")
 
 
 class ArtifactReference(BasicRecord, LinkORM, TracksRun):
@@ -229,3 +249,16 @@ class TransformReference(BasicRecord, LinkORM, TracksRun):
 
     class Meta:
         unique_together = ("transform", "reference")
+
+
+class CollectionReference(BasicRecord, LinkORM, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    collection: Collection = ForeignKey(
+        Collection, CASCADE, related_name="links_reference"
+    )
+    reference: Reference = ForeignKey(
+        Reference, PROTECT, related_name="links_collection"
+    )
+
+    class Meta:
+        unique_together = ("collection", "reference")
