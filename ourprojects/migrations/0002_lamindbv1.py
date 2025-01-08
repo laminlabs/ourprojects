@@ -16,32 +16,32 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="person",
             name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, db_default=1),
+            field=models.SmallIntegerField(db_index=True, default=1, db_default=1),
         ),
         migrations.AddField(
             model_name="project",
             name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, db_default=1),
+            field=models.SmallIntegerField(db_index=True, default=1, db_default=1),
         ),
         migrations.AddField(
             model_name="reference",
             name="_branch_code",
-            field=models.SmallIntegerField(db_index=True, db_default=1),
+            field=models.SmallIntegerField(db_index=True, default=1, db_default=1),
         ),
         migrations.AddField(
             model_name="person",
             name="aux",
-            field=models.JSONField(db_default=None, null=True),
+            field=models.JSONField(default=None, db_default=None, null=True),
         ),
         migrations.AddField(
             model_name="project",
             name="aux",
-            field=models.JSONField(db_default=None, null=True),
+            field=models.JSONField(default=None, db_default=None, null=True),
         ),
         migrations.AddField(
             model_name="reference",
             name="aux",
-            field=models.JSONField(db_default=None, null=True),
+            field=models.JSONField(default=None, db_default=None, null=True),
         ),
         migrations.CreateModel(
             name="CollectionProject",
