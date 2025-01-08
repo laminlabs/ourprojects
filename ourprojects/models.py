@@ -25,6 +25,7 @@ from lamindb.models import (
     Record,
     TracksRun,
     TracksUpdates,
+    Transform,
     ValidateFields,
 )
 
@@ -89,6 +90,10 @@ class Project(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         Artifact, through="ArtifactProject", related_name="projects"
     )
     """Artifacts labeled with this Project."""
+    transforms: Transform = models.ManyToManyField(
+        Transform, through="TransformProject", related_name="references"
+    )
+    """Transforms labeled with this project."""
 
 
 class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
@@ -160,6 +165,38 @@ class Reference(Record, CanCurate, TracksRun, TracksUpdates, ValidateFields):
         Artifact, through="ArtifactReference", related_name="references"
     )
     """Artifacts labeled with this reference."""
+    transforms: Artifact = models.ManyToManyField(
+        Transform, through="TransformReference", related_name="references"
+    )
+    """Transforms labeled with this reference."""
+
+
+class ArtifactProject(BasicRecord, LinkORM, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_project")
+    project: Project = ForeignKey(Project, PROTECT, related_name="links_artifact")
+    feature: Feature | None = ForeignKey(
+        Feature,
+        PROTECT,
+        null=True,
+        default=None,
+        related_name="links_artifactproject",
+    )
+    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+
+    class Meta:
+        # can have the same label linked to the same artifact if the feature is different
+        unique_together = ("artifact", "project", "feature")
+
+
+class TransformProject(BasicRecord, LinkORM, TracksRun):
+    id: int = models.BigAutoField(primary_key=True)
+    transform: Transform = ForeignKey(Transform, CASCADE, related_name="links_project")
+    project: Project = ForeignKey(Project, PROTECT, related_name="links_transform")
+
+    class Meta:
+        unique_together = ("transform", "project")
 
 
 class ArtifactReference(BasicRecord, LinkORM, TracksRun):
@@ -181,20 +218,14 @@ class ArtifactReference(BasicRecord, LinkORM, TracksRun):
         unique_together = ("artifact", "reference", "feature")
 
 
-class ArtifactProject(BasicRecord, LinkORM, TracksRun):
+class TransformReference(BasicRecord, LinkORM, TracksRun):
     id: int = models.BigAutoField(primary_key=True)
-    artifact: Artifact = ForeignKey(Artifact, CASCADE, related_name="links_project")
-    project: Project = ForeignKey(Project, PROTECT, related_name="links_artifact")
-    feature: Feature | None = ForeignKey(
-        Feature,
-        PROTECT,
-        null=True,
-        default=None,
-        related_name="links_artifactproject",
+    transform: Transform = ForeignKey(
+        Transform, CASCADE, related_name="links_reference"
     )
-    label_ref_is_name: bool | None = BooleanField(null=True, default=None)
-    feature_ref_is_name: bool | None = BooleanField(null=True, default=None)
+    reference: Reference = ForeignKey(
+        Reference, PROTECT, related_name="links_transform"
+    )
 
     class Meta:
-        # can have the same label linked to the same artifact if the feature is different
-        unique_together = ("artifact", "project", "feature")
+        unique_together = ("transform", "reference")
