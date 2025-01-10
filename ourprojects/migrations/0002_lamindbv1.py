@@ -291,4 +291,34 @@ class Migration(migrations.Migration):
                 to="lamindb.transform",
             ),
         ),
+        migrations.AddField(
+            model_name="person",
+            name="space",
+            field=lamindb.base.fields.ForeignKey(
+                blank=True,
+                default=1,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="lamindb.space",
+            ),
+        ),
+        migrations.AddField(
+            model_name="project",
+            name="space",
+            field=lamindb.base.fields.ForeignKey(
+                blank=True,
+                default=1,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="lamindb.space",
+            ),
+        ),
+        migrations.AddField(
+            model_name="reference",
+            name="space",
+            field=lamindb.base.fields.ForeignKey(
+                blank=True,
+                default=1,
+                on_delete=django.db.models.deletion.PROTECT,
+                to="lamindb.space",
+            ),
+        ),
     ]
