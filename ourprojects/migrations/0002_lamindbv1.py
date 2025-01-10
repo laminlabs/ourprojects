@@ -321,4 +321,16 @@ class Migration(migrations.Migration):
                 to="lamindb.space",
             ),
         ),
+        migrations.RemoveField(
+            model_name="person",
+            name="_previous_runs",
+        ),
+        migrations.RemoveField(
+            model_name="project",
+            name="_previous_runs",
+        ),
+        migrations.RemoveField(
+            model_name="reference",
+            name="_previous_runs",
+        ),
     ]
